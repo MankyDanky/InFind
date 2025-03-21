@@ -1,0 +1,352 @@
+.channel-details {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.back-button {
+  display: inline-block;
+  margin-bottom: 20px;
+  padding: 8px 16px;
+  background-color: #f1f1f1;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.back-button:hover {
+  background-color: #e0e0e0;
+}
+
+/* Channel Header */
+.channel-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.channel-avatar {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.channel-avatar img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #ff3333;
+}
+
+.channel-title {
+  width: 100%;
+  text-align: center;
+}
+
+.channel-title h1 {
+  margin: 0 0 10px 0;
+  font-size: 2rem;
+  text-align: center;
+}
+
+.channel-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 15px;
+  color: #666;
+  justify-content: center;
+}
+
+.channel-links {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.channel-links a {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: #ff0000;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.channel-links a:hover {
+  background-color: #cc0000;
+}
+
+/* Channel Content */
+.channel-content {
+  margin-top: 30px;
+}
+
+.channel-about h2 {
+  margin-top: 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.description {
+  white-space: pre-line;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+/* Stats */
+.channel-stats {
+  display: flex;
+  justify-content: space-between;
+  margin: 30px 0;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+.stat-item {
+  text-align: center;
+  flex: 1;
+}
+
+.stat-value {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #ff0000;
+}
+
+.stat-label {
+  color: #666;
+  margin-top: 5px;
+  font-size: 0.9rem;
+}
+
+/* Metadata */
+.channel-metadata {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+}
+
+.metadata-item {
+  margin-bottom: 8px;
+}
+
+.metadata-item:last-child {
+  margin-bottom: 0;
+}
+
+/* Loading & Error States */
+.loading-spinner {
+  text-align: center;
+  padding: 40px;
+  font-size: 1.5rem;
+  color: #666;
+}
+
+.error-message {
+  background-color: #fff5f5;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 20px 0;
+  border-left: 4px solid #ff3333;
+  color: #333;
+}
+
+.error-message h2 {
+  color: #ff3333;
+  margin-top: 0;
+}
+
+.error-help {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #ffe0e0;
+}
+
+.error-help p {
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.error-help ul {
+  padding-left: 20px;
+}
+
+.error-help li {
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+}
+
+.error-action-button {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 8px 16px;
+  background-color: #ff3333;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.error-action-button:hover {
+  background-color: #cc0000;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .channel-stats {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .stat-item {
+    padding: 10px 0;
+  }
+}
+
+/* Marketing Analysis Styles */
+.marketing-analysis-section {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 30px;
+  border-left: 4px solid #ff0000;
+}
+
+.marketing-analysis-section h2 {
+  color: #333;
+  margin-top: 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.analysis-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.analysis-button:hover {
+  background-color: #218838;
+}
+
+.analysis-button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.analysis-loading {
+  padding: 20px;
+  text-align: center;
+  color: #666;
+}
+
+.analysis-error {
+  padding: 10px;
+  margin: 10px 0;
+  background-color: #f8d7da;
+  color: #721c24;
+  border-radius: 4px;
+}
+
+.analysis-content {
+  margin-top: 15px;
+}
+
+.analysis-metadata {
+  font-size: 0.8rem;
+  color: #666;
+  text-align: right;
+  margin-bottom: 15px;
+}
+
+/* New pros and cons styles */
+.potential-summary h3 {
+  padding: 10px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.pros-cons-container {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.pros-section, .cons-section {
+  flex: 1;
+  padding: 15px;
+  border-radius: 6px;
+}
+
+.pros-section {
+  background-color: rgba(40, 167, 69, 0.1);
+  border-left: 4px solid #28a745;
+}
+
+.cons-section {
+  background-color: rgba(220, 53, 69, 0.1);
+  border-left: 4px solid #dc3545;
+}
+
+.pros-section h3, .cons-section h3, .best-fit-section h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.pros-section ul, .cons-section ul, .best-fit-section ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.pros-section li, .cons-section li, .best-fit-section li {
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.best-fit-section {
+  padding: 15px;
+  background-color: rgba(0, 123, 255, 0.1);
+  border-left: 4px solid #007bff;
+  border-radius: 6px;
+}
+
+/* Responsive layout for the pros/cons on mobile */
+@media (max-width: 768px) {
+  .pros-cons-container {
+    flex-direction: column;
+  }
+  
+  .pros-section, .cons-section {
+    margin-bottom: 15px;
+  }
+}
+
+.channel-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+} 
