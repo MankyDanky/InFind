@@ -74,7 +74,10 @@ function SearchPage() {
 
   return (
     <div className="App">
-      <h1>InFind</h1>
+      <div className="header">
+        <i className="fas fa-info-circle header-icon"></i>
+        <h1>InFind</h1>
+      </div>
       <div className="search-section">
         <form onSubmit={handleSearch}>
           <div className="platform-icons">

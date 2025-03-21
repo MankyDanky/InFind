@@ -13,6 +13,9 @@ const ChannelDetails = () => {
   const [analysisError, setAnalysisError] = useState(null);
   const navigate = useNavigate();
 
+  // Define fallback image at component level
+  const fallbackImage = 'https://placehold.co/200x200/gray/white?text=No+Image';
+
   useEffect(() => {
     // Only allow YouTube channels
     if (platform !== 'youtube') {
@@ -98,7 +101,11 @@ const ChannelDetails = () => {
     return num.toLocaleString();
   };
 
-  const fallbackImage = 'https://placehold.co/200x200/gray/white?text=No+Image';
+  // Handle image error function
+  const handleImageError = () => {
+    console.log('Image failed to load, using fallback image');
+    setImgError(true);
+  };
 
   if (loading) {
     return (
@@ -170,11 +177,8 @@ const ChannelDetails = () => {
     channelUrl = `https://youtube.com/c/${channel.customUrl}`;
   }
 
-  // Set up thumbnail URL with fallback
-  let thumbnailUrl = channel.thumbnail;
-  if (!thumbnailUrl || imgError) {
-    thumbnailUrl = fallbackImage;
-  }
+  // Use thumbnail or fallback image if there's an error or no thumbnail
+  const thumbnailUrl = imgError || !channel.thumbnail ? fallbackImage : channel.thumbnail;
 
   return (
     <div className="channel-details">
@@ -187,7 +191,7 @@ const ChannelDetails = () => {
           <img 
             src={thumbnailUrl} 
             alt={channel.name} 
-            onError={() => setImgError(true)} 
+            onError={handleImageError} 
           />
         </div>
         <div className="channel-title">
