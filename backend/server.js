@@ -5,6 +5,8 @@ const { google } = require('googleapis');
 const { TwitterApi } = require('twitter-api-v2');
 const FacebookAdsApi = require('facebook-nodejs-business-sdk').FacebookAdsApi;
 const Page = require('facebook-nodejs-business-sdk').Page;
+const fs = require('fs');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
@@ -170,8 +172,61 @@ const checkRateLimit = (req, res, next) => {
 app.use('/api/twitter', checkRateLimit);
 
 // Cache implementation
-const cache = new Map();
+const CACHE_FILE_PATH = path.join(__dirname, 'cache-data.json');
 const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
+// In-memory cache (will be loaded from file)
+const cache = new Map();
+
+// Initialize the cache from file if it exists
+function initializeCache() {
+  try {
+    if (fs.existsSync(CACHE_FILE_PATH)) {
+      const fileData = fs.readFileSync(CACHE_FILE_PATH, 'utf8');
+      const cacheData = JSON.parse(fileData);
+      
+      // Validate the data before loading
+      if (cacheData && typeof cacheData === 'object') {
+        Object.entries(cacheData).forEach(([key, entry]) => {
+          if (entry && entry.data && entry.timestamp) {
+            // Only load non-expired entries
+            if (Date.now() - entry.timestamp < CACHE_TTL) {
+              cache.set(key, entry);
+            }
+          }
+        });
+        console.log(`Cache initialized with ${cache.size} valid entries from file`);
+      }
+    } else {
+      console.log('No cache file found, starting with empty cache');
+    }
+  } catch (error) {
+    console.error('Error initializing cache from file:', error);
+    console.log('Starting with empty cache');
+  }
+}
+
+// Save cache to file
+function saveCache() {
+  try {
+    const cacheObject = {};
+    cache.forEach((value, key) => {
+      cacheObject[key] = value;
+    });
+    
+    fs.writeFileSync(CACHE_FILE_PATH, JSON.stringify(cacheObject, null, 2), 'utf8');
+    console.log(`Cache saved to file with ${cache.size} entries`);
+  } catch (error) {
+    console.error('Error saving cache to file:', error);
+  }
+}
+
+// Initialize cache on server start
+initializeCache();
+
+// Set up periodic cache saving (every 5 minutes)
+const CACHE_SAVE_INTERVAL = 5 * 60 * 1000; // 5 minutes
+setInterval(saveCache, CACHE_SAVE_INTERVAL);
 
 function getCachedData(key) {
   const cached = cache.get(key);
@@ -188,7 +243,21 @@ function setCachedData(key, data) {
     timestamp: Date.now()
   });
   console.log(`Cached data for key: ${key}`);
+  
+  // Save to file after any update (could optimize this for high-traffic scenarios)
+  saveCache();
 }
+
+// Add a route to clear the cache if needed
+app.post('/api/cache/clear', (req, res) => {
+  try {
+    cache.clear();
+    saveCache();
+    res.json({ message: 'Cache cleared successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to clear cache', details: error.message });
+  }
+});
 
 // Add YouTube API error handling
 const handleYouTubeError = (error) => {
@@ -265,17 +334,20 @@ app.get('/api/youtube/channels', async (req, res) => {
 
     console.log(`Searching for YouTube channels in industry: ${industry}`);
 
-    const prompt = `You are a YouTube channel research expert focused on finding social media influencers. Provide a list of 2 popular YouTube influencers in the ${industry} industry.
+    const prompt = `You are a YouTube channel research expert focused on finding social media influencers. Provide a list of UP TO 10 popular YouTube influencers in the ${industry} industry.
 
     IMPORTANT CRITERIA:
-    - Focus ONLY on true content creators and social media influencers
+    - ONLY include REAL, VERIFIABLE accounts that actually exist on YouTube
+    - Include ONLY accounts you can confirm exist with their actual current channel information
+    - If you can only confidently confirm fewer than 10 accounts, include ONLY those you are certain about
+    - Focus only on true content creators and social media influencers
     - DO NOT include politicians, news anchors, business executives, or corporate/brand channels
     - Prioritize individual creators who have built a following through their personal content
     - The influencers should have an engaged audience and authentic following
     - They should be known primarily for their social media presence, not for other professional roles
     
-    IMPORTANT: Your response must be a valid JSON array containing exactly 2 objects. Each object must have these exact fields:
-    - name: The channel name
+    IMPORTANT: Your response must be a valid JSON array containing between 1 and 10 objects. Each object must have these exact fields:
+    - name: The channel name (exactly as it appears on YouTube)
     - url: The channel URL (preferably in format https://youtube.com/channel/CHANNEL_ID)
     - subscribers: Approximate subscriber count (e.g., "1.2M")
     - description: A brief description of their content (around 100-150 characters)
@@ -292,6 +364,7 @@ app.get('/api/youtube/channels', async (req, res) => {
       }
     ]
     
+    DO NOT invent or hallucinate accounts. Only include channels you are confident actually exist.
     Ensure all quotes are properly escaped and the JSON is valid.`;
 
     const completion = await openai.chat.completions.create({
@@ -307,7 +380,7 @@ app.get('/api/youtube/channels', async (req, res) => {
         }
       ],
       temperature: 0.7,
-      max_tokens: 1000
+      max_tokens: 4000
     });
 
     const response = completion.choices[0].message.content;
@@ -316,8 +389,8 @@ app.get('/api/youtube/channels', async (req, res) => {
     try {
       const channels = JSON.parse(response);
       
-      if (!Array.isArray(channels) || channels.length !== 2) {
-        throw new Error('Response is not a valid array of 2 channels');
+      if (!Array.isArray(channels) || channels.length === 0 || channels.length > 10) {
+        throw new Error(`Response is not a valid array of 1-10 channels (received ${channels.length})`);
       }
 
       channels.forEach((channel, index) => {
@@ -370,22 +443,25 @@ app.get('/api/twitter/channels', async (req, res) => {
 
     console.log(`Searching for Twitter accounts in industry: ${industry}`);
 
-    const prompt = `You are a Twitter account research expert specialized in finding influencers. Provide a list of 2 influential Twitter creators in the ${industry} industry.
+    const prompt = `You are a Twitter account research expert specialized in finding influencers. Provide a list of UP TO 10 influential Twitter creators in the ${industry} industry.
     
     IMPORTANT CRITERIA:
-    - Focus ONLY on true content creators and social media influencers
+    - ONLY include REAL, VERIFIABLE accounts that actually exist on Twitter
+    - Include ONLY accounts you can confirm exist with their actual current handle and information
+    - If you can only confidently confirm fewer than 10 accounts, include ONLY those you are certain about
+    - Focus only on true content creators and social media influencers
     - DO NOT include politicians, journalists, business executives, or corporate accounts
     - Prioritize individual creators who have built a following through their personal content
     - The influencers should have an engaged audience and authentic following
     - They should be known primarily for their social media presence, not for other professional roles
     
-    IMPORTANT: Your response must be a valid JSON array containing exactly 2 objects. Each object must have these exact fields:
-    - name: The account name
-    - url: Their Twitter profile URL
+    IMPORTANT: Your response must be a valid JSON array containing between 1 and 10 objects. Each object must have these exact fields:
+    - name: The account name (exactly as it appears on Twitter)
+    - url: Their Twitter profile URL (with correct username)
     - subscribers: Approximate follower count (e.g., "1.2M")
     - description: A brief description of their content
     - influence: Why they are influential in the ${industry} industry
-    - username: Their Twitter username (without @)
+    - username: Their Twitter username (without @, exactly as it appears in the URL)
     
     Example format:
     [
@@ -399,6 +475,7 @@ app.get('/api/twitter/channels', async (req, res) => {
       }
     ]
     
+    DO NOT invent or hallucinate accounts. Only include accounts you are confident actually exist.
     Ensure all quotes are properly escaped and the JSON is valid.`;
 
     const completion = await openai.chat.completions.create({
@@ -414,7 +491,7 @@ app.get('/api/twitter/channels', async (req, res) => {
         }
       ],
       temperature: 0.7,
-      max_tokens: 1000
+      max_tokens: 4000
     });
 
     const response = completion.choices[0].message.content;
@@ -423,8 +500,8 @@ app.get('/api/twitter/channels', async (req, res) => {
     try {
       const accounts = JSON.parse(response);
       
-      if (!Array.isArray(accounts) || accounts.length !== 2) {
-        throw new Error('Response is not a valid array of 2 accounts');
+      if (!Array.isArray(accounts) || accounts.length === 0 || accounts.length > 10) {
+        throw new Error(`Response is not a valid array of 1-10 accounts (received ${accounts.length})`);
       }
 
       accounts.forEach((account, index) => {
@@ -572,17 +649,20 @@ app.get('/api/facebook/channels', async (req, res) => {
 
     console.log(`Searching for Facebook pages in industry: ${industry}`);
 
-    const prompt = `You are a Facebook page research expert specialized in finding influencers. Provide a list of 2 influential Facebook creator pages in the ${industry} industry.
+    const prompt = `You are a Facebook page research expert specialized in finding influencers. Provide a list of UP TO 10 influential Facebook creator pages in the ${industry} industry.
     
     IMPORTANT CRITERIA:
-    - Focus ONLY on true content creators and social media influencers
+    - ONLY include REAL, VERIFIABLE pages that actually exist on Facebook
+    - Include ONLY pages you can confirm exist with their actual current name and username
+    - If you can only confidently confirm fewer than 10 pages, include ONLY those you are certain about
+    - Focus only on true content creators and social media influencers
     - DO NOT include politicians, journalists, business executives, or corporate/brand pages
     - Prioritize individual creators who have built a following through their personal content
     - The influencers should have an engaged audience and authentic following
     - They should be known primarily for their social media presence, not for other professional roles
     
-    IMPORTANT: Your response must be a valid JSON array containing exactly 2 objects. Each object must have these exact fields:
-    - name: The page name
+    IMPORTANT: Your response must be a valid JSON array containing between 1 and 10 objects. Each object must have these exact fields:
+    - name: The page name (exactly as it appears on Facebook)
     - url: Their Facebook page URL (in the format https://facebook.com/username)
     - subscribers: Approximate follower count (e.g., "1.2M")
     - description: A brief description of their content
@@ -601,6 +681,7 @@ app.get('/api/facebook/channels', async (req, res) => {
       }
     ]
     
+    DO NOT invent or hallucinate pages. Only include pages you are confident actually exist.
     Ensure all quotes are properly escaped and the JSON is valid.`;
 
     const completion = await openai.chat.completions.create({
@@ -616,7 +697,7 @@ app.get('/api/facebook/channels', async (req, res) => {
         }
       ],
       temperature: 0.7,
-      max_tokens: 1000
+      max_tokens: 4000
     });
 
     const response = completion.choices[0].message.content;
@@ -625,8 +706,8 @@ app.get('/api/facebook/channels', async (req, res) => {
     try {
       const pages = JSON.parse(response);
       
-      if (!Array.isArray(pages) || pages.length !== 2) {
-        throw new Error('Response is not a valid array of 2 pages');
+      if (!Array.isArray(pages) || pages.length === 0 || pages.length > 10) {
+        throw new Error(`Response is not a valid array of 1-10 pages (received ${pages.length})`);
       }
 
       pages.forEach((page, index) => {
@@ -719,7 +800,7 @@ app.get('/api/facebook/account/:accountName', async (req, res) => {
           }
         ],
         temperature: 0.5,
-        max_tokens: 1000
+        max_tokens: 2000
       });
 
       const response = completion.choices[0].message.content;
@@ -863,7 +944,7 @@ app.get('/api/twitter/account/:username', async (req, res) => {
             }
           ],
           temperature: 0.5,
-          max_tokens: 1000
+          max_tokens: 2000
         });
 
         const response = completion.choices[0].message.content;
