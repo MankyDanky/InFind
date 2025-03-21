@@ -1,7 +1,7 @@
 const ChannelCard = ({ channel, platform, onChannelClick }) => {
   const handleCardClick = () => {
-    // Only allow clicking YouTube channels
-    if (platform === 'youtube') {
+    // Allow clicking YouTube, Facebook, and Twitter channels
+    if (platform === 'youtube' || platform === 'facebook' || platform === 'twitter') {
       onChannelClick(channel, platform);
     }
   };
@@ -11,7 +11,7 @@ const ChannelCard = ({ channel, platform, onChannelClick }) => {
 
   return (
     <div 
-      className={`channel-card ${platform === 'youtube' ? 'clickable' : 'disabled'}`} 
+      className={`channel-card ${platform === 'youtube' || platform === 'facebook' || platform === 'twitter' ? 'clickable' : 'disabled'}`} 
       onClick={handleCardClick}
       data-platform={platform}
     >
@@ -20,7 +20,7 @@ const ChannelCard = ({ channel, platform, onChannelClick }) => {
         <p className="platform-badge">{platform}</p>
         <p className="subscribers">{channel.subscribers} {followerTerm}</p>
         <p className="description">{channel.description}</p>
-        {platform !== 'youtube' && (
+        {platform !== 'youtube' && platform !== 'facebook' && platform !== 'twitter' && (
           <div className="details-notice">
             Details not available
           </div>

@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import ChannelDetails from './components/ChannelDetails';
 import ChannelCard from './components/ChannelCard';
+import FacebookAccountDetails from './components/FacebookAccountDetails';
+import TwitterAccountDetails from './components/TwitterAccountDetails';
 import './App.css';
 
 function SearchPage() {
@@ -60,16 +62,59 @@ function SearchPage() {
       // For YouTube we use the name, which will be searched by the API
       channelIdentifier = channel.name;
       console.log(`Navigating to YouTube channel: ${channelIdentifier}`);
-    } else if (platform === 'facebook' && channel.username) {
-      // For Facebook we prefer the username
-      channelIdentifier = channel.username;
-    } else {
-      // Fallback to name for all other cases
-      channelIdentifier = channel.name;
+      navigate(`/channel/${platform}/${encodeURIComponent(channelIdentifier)}`);
+    } else if (platform === 'facebook') {
+      // For Facebook we prefer the username from the URL if available
+      channelIdentifier = channel.username || extractFacebookUsername(channel.url) || channel.name;
+      console.log(`Navigating to Facebook account: ${channelIdentifier}`);
+      navigate(`/facebook/${encodeURIComponent(channelIdentifier)}`);
+    } else if (platform === 'twitter') {
+      // For Twitter we use the username without the @ symbol
+      channelIdentifier = channel.username || extractTwitterUsername(channel.url) || channel.name;
+      console.log(`Navigating to Twitter account: ${channelIdentifier}`);
+      navigate(`/twitter/${encodeURIComponent(channelIdentifier)}`);
+    }
+  };
+
+  // Helper function to extract username from Facebook URL
+  const extractFacebookUsername = (url) => {
+    if (!url) return null;
+    
+    try {
+      const urlObj = new URL(url);
+      const pathParts = urlObj.pathname.split('/').filter(part => part);
+      
+      if (pathParts.length > 0) {
+        // Skip the facebook.com/pg/ prefix if present
+        if (pathParts[0] === 'pg' && pathParts.length > 1) {
+          return pathParts[1];
+        }
+        return pathParts[0]; // First part of the path is usually the username
+      }
+    } catch (e) {
+      console.error('Error parsing Facebook URL:', e);
     }
     
-    console.log(`Navigating to ${platform} channel:`, channelIdentifier);
-    navigate(`/channel/${platform}/${encodeURIComponent(channelIdentifier)}`);
+    return null;
+  };
+
+  // Helper function to extract username from Twitter URL
+  const extractTwitterUsername = (url) => {
+    if (!url) return null;
+    
+    try {
+      const urlObj = new URL(url);
+      const pathParts = urlObj.pathname.split('/').filter(part => part);
+      
+      if (pathParts.length > 0) {
+        // Remove @ if present
+        return pathParts[0].replace(/^@/, '');
+      }
+    } catch (e) {
+      console.error('Error parsing Twitter URL:', e);
+    }
+    
+    return null;
   };
 
   return (
@@ -130,6 +175,8 @@ function App() {
       <Routes>
         <Route path="/" element={<SearchPage />} />
         <Route path="/channel/:platform/:channelName" element={<ChannelDetails />} />
+        <Route path="/facebook/:accountName" element={<FacebookAccountDetails />} />
+        <Route path="/twitter/:username" element={<TwitterAccountDetails />} />
       </Routes>
     </Router>
   );
