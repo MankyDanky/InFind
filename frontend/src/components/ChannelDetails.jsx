@@ -113,7 +113,9 @@ const ChannelDetails = () => {
         <div className="back-button" onClick={handleBack}>
           &larr; Back
         </div>
-        <div className="loading-spinner">Loading...</div>
+        <div className="loading-spinner">
+          Loading<span className="loading-dots"></span>
+        </div>
       </div>
     );
   }
@@ -225,7 +227,12 @@ const ChannelDetails = () => {
             
             {analysisLoading && (
               <div className="loading-spinner analysis-loading">
-                Analyzing...
+                <div>Analyzing your channel</div>
+                <div className="bounce-animation">
+                  <div className="dot"></div>
+                  <div className="dot"></div>
+                  <div className="dot"></div>
+                </div>
               </div>
             )}
             

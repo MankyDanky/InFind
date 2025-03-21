@@ -75,7 +75,9 @@ const FacebookAccountDetails = () => {
         <div className="back-button" onClick={handleBack}>
           &larr; Back
         </div>
-        <div className="loading-spinner">Loading...</div>
+        <div className="loading-spinner">
+          Loading<span className="loading-dots"></span>
+        </div>
       </div>
     );
   }

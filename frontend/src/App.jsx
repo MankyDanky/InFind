@@ -138,17 +138,21 @@ function SearchPage() {
             ))}
           </div>
           <select 
-            value={industry} 
+            value={industry}
             onChange={(e) => setIndustry(e.target.value)}
             required
           >
-            <option value="">Select an industry</option>
+            <option value="">Select Industry</option>
             {industries.map((ind) => (
               <option key={ind} value={ind}>{ind}</option>
             ))}
           </select>
           <button type="submit" disabled={loading}>
-            {loading ? 'Searching...' : 'Find Influencers'}
+            {loading ? (
+              <span>
+                Searching<span className="loading-dots"></span>
+              </span>
+            ) : 'Find Influencers'}
           </button>
         </form>
       </div>

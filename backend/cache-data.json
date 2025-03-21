@@ -2240,5 +2240,52 @@
       "fetchedAt": "2025-03-21T21:57:04.983Z"
     },
     "timestamp": 1742594224983
+  },
+  "youtube_channel_Graham Stephan": {
+    "data": {
+      "id": "UCV6KDgJskWaEckne5aPA0aQ",
+      "name": "Graham Stephan",
+      "description": "As a 34 year old real estate investor who started working in real estate shortly after turning 18, with over $120,000,000 in residential sales since 2008, I've created this channel to share my successes, failures, and experiences in real estate, personal finance, and investing news. I'm also obsessed with frugality and credit card churning...a lot. So Subscribe! Because all the cool kids are doing it.  \n\nFeel free to follow me on Snapchat / Instagram: GPStephan",
+      "thumbnail": "https://yt3.ggpht.com/ytc/AIdro_m4km0pJvdvRxT_gFN6WS16Ggl9D_eX_K8uxCdgTA_hFBo=s800-c-k-c0x00ffffff-no-rj",
+      "subscriberCount": "4990000",
+      "videoCount": "1096",
+      "viewCount": "1164660909",
+      "customUrl": "@grahamstephan",
+      "publishedAt": "2016-12-25T07:48:56Z",
+      "country": "US",
+      "playlistId": "UUV6KDgJskWaEckne5aPA0aQ"
+    },
+    "timestamp": 1742594358596
+  },
+  "youtube_marketing_UCV6KDgJskWaEckne5aPA0aQ": {
+    "data": {
+      "channelName": "Graham Stephan",
+      "channelStats": {
+        "subscribers": "4,990,000",
+        "videos": "1,096",
+        "views": "1,164,660,909"
+      },
+      "analysisText": "Partnership Potential: High - Graham Stephan is a highly influential figure in the personal finance and real estate sector, with a vast reach and substantial viewer engagement.\n\nPROS:\n1. Large audience: With nearly 5 million subscribers and over a billion total views, any brand partnering with Graham Stephan has the potential for significant exposure.\n2. Expertise and credibility: As a successful real estate investor, Graham brings a level of authenticity and trustworthiness that can enhance brand reputation.\n3. Engaging content: His content, which includes personal finance, investing, and real estate, is informative and engaging, leading to high viewer retention.\n4. Active on multiple platforms: Graham's presence on Snapchat and Instagram increases his reach and the potential visibility for partners.\n5. Variety of content: His variety of content including analysis of other successful personalities may attract a diverse audience demographic.\n\nCONS:\n1. Niche content: The focus on finance and real estate might not be relevant to all brands, potentially limiting the partnership's effectiveness.\n2. Controversial topics: Some video topics may be politically charged or controversial, which could pose a reputational risk for brands.\n3. Lack of direct product promotion: His content doesn't seem to frequently include direct product reviews or endorsements, which may limit promotional opportunities.\n4. Saturated market: The personal finance and investment space is highly competitive, meaning a brand partnership may not stand out.\n5. Lack of demographic data: Without specific data on the age, gender, and location of his viewers, it may be difficult for brands to determine if his audience aligns with their target market.\n\nBest fit for:\n1. Financial services brands: Banks, investment platforms, or insurance companies.\n2. Real estate companies: Property listing sites, real estate agencies or construction firms.\n3. Personal finance tools: Budgeting apps, tax software or credit card companies.\n4. Education platforms: Online courses or educational resources related to finance or real estate.\n5. Lifestyle brands: Given his focus on frugality, brands that promote a minimalist or cost-effective lifestyle may also be a good fit.",
+      "generatedAt": "2025-03-21T21:59:35.103Z"
+    },
+    "timestamp": 1742594375109
+  },
+  "facebook_account_daveramsey": {
+    "data": {
+      "name": "Dave Ramsey",
+      "url": "https://www.facebook.com/daveramsey",
+      "followers": "4.6M",
+      "likes": "4.5M",
+      "description": "Dave Ramsey is America's trusted voice on money and business. He's authored seven best-selling books: Financial Peace, More Than Enough, The Total Money Makeover, EntreLeadership, The Complete Guide to Money, Smart Money Smart Kids and The Legacy Journey. The Dave Ramsey Show is heard by more than 16 million listeners each week on more than 600 radio stations and digitally through podcasts, online audio streaming and a 24-hour online streaming video channel.",
+      "engagementRate": "2.5%",
+      "pageCreated": "2008",
+      "postFrequency": "Multiple times per day",
+      "contentFocus": "Financial advice, personal development, and business insights",
+      "location": "Nashville, TN, United States",
+      "verified": true,
+      "platform": "facebook",
+      "fetchedAt": "2025-03-21T22:00:19.905Z"
+    },
+    "timestamp": 1742594419905
   }
 }

@@ -110,8 +110,35 @@ button:hover {
 }
 
 button:disabled {
-  background-color: #cccccc;
+  background-color: #999;
   cursor: not-allowed;
+}
+
+/* Loading animations */
+.loading-dots:after {
+  content: '.';
+  animation: dots 1.5s steps(5, end) infinite;
+  display: inline-block;
+  width: 24px;
+  text-align: left;
+}
+
+@keyframes dots {
+  0%, 20% {
+    content: '.';
+  }
+  40% {
+    content: '..';
+  }
+  60% {
+    content: '...';
+  }
+  80% {
+    content: '..';
+  }
+  100% {
+    content: '.';
+  }
 }
 
 .error {
@@ -455,4 +482,8 @@ button:disabled {
 
 .header h1 {
   margin: 0;
+}
+
+.channels-section {
+  padding: 20px;
 }
